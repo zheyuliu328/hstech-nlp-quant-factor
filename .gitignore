@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+.venv/
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# Data files (exclude large datasets)
+data/raw/
+data/processed/articles_recent_cleaned.csv
+data/processed/articles_recent_cleaned.json
+data/processed/articles_with_sentiment.csv
+data/processed/test_cleaned.csv
+*.log
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+.deps_ok
+prof.out
+
+# Keep important processed results but exclude large raw data
+!data/processed/daily_sentiment_factors.csv
+!data/processed/factor_evaluation.json
+!data/processed/ic_results.csv

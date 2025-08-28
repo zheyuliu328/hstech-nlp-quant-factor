@@ -1,0 +1,8 @@
+eventregistry
+pandas
+python-dateutil
+python-dotenv
+transformers
+torch
+matplotlib
+seaborn

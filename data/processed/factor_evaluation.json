@@ -1,0 +1,27 @@
+{
+  "comprehensive": {
+    "total_days": 2,
+    "ic_mean": 0.0642,
+    "ic_std": 0.1011,
+    "ic_t_stat": 0.8971,
+    "ic_ir": 0.6343,
+    "rank_ic_mean": -0.1768,
+    "rank_ic_std": 0.25,
+    "rank_ic_t_stat": -1.0,
+    "rank_ic_ir": -0.7071,
+    "positive_ic_ratio": 0.5,
+    "positive_rank_ic_ratio": 0.0
+  },
+  "monthly_stats": [
+    {
+      "month": "2025-08",
+      "IC_mean": 0.0642,
+      "IC_std": 0.1011,
+      "IC_count": 2,
+      "RankIC_mean": -0.1768,
+      "RankIC_std": 0.25,
+      "IC_t": 0.8980465945039833,
+      "RankIC_t": -1.000131831310253
+    }
+  ]
+}
