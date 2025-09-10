@@ -133,6 +133,7 @@ def to_rows_for_csv(articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             "dateTime": a.get("dateTime"),
             "date": a.get("date"),
             "time": a.get("time"),
+            "target": a.get("target"),
         })
     return rows
 
@@ -177,8 +178,16 @@ def pull_articles_iter(
     is_duplicate_filter: str = "skipDuplicates",
     max_items: int = 100,
 ) -> Iterable[Dict[str, Any]]:
+    # Heuristic: if looks like HK ticker (e.g., 00700.HK), expand to company name OR code
+    # to improve recall in ER. Users can also pass names directly via --keywords.
+    q = keywords
+    if isinstance(q, str) and q.endswith('.HK'):
+        core = q.replace('.HK', '')
+        # broaden search: code OR HK code OR generic mention of HK code without dot
+        q = f"{core} OR {q} OR \"{core} HK\" OR \"HK{core}\""
+
     it = QueryArticlesIter(
-        keywords=keywords,
+        keywords=q,
         lang=lang,
         isDuplicateFilter=is_duplicate_filter,
         dataType=["news"],
@@ -187,6 +196,9 @@ def pull_articles_iter(
     )
     req = build_req(return_body=True, return_concepts=True)
     for art in it.execQuery(er, maxItems=max_items, req=req):
+        # attach target back for downstream diagnostics
+        if isinstance(art, dict):
+            art.setdefault('target', keywords)
         yield art
 
 @dataclass

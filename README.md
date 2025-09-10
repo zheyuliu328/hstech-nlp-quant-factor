@@ -98,7 +98,7 @@ python src/download_hk_prices.py \
   --start-date 2022-01-01 --end-date 2024-12-31 --source auto --with-derived
 
 # 新闻收集
-python data_pipe_hk.py \
+python src/data_pipe.py \
   --universe-file data/universe/hk/hsci_constituents.csv \
   --start-date 2022-01-01 --max-articles-per-stock 1000 \
   --output-dir news_out/hk/
@@ -118,13 +118,13 @@ python src/hk_factor_generator.py \
 ### 通用新闻管道（HSTECH/示例）
 ```bash
 # 近30天：两只股票，两页
-python data_pipe.py --symbols 0700.HK 9988.HK --recent_pages 2
+python src/data_pipe.py --symbols 0700.HK 9988.HK --recent_pages 2
 
 # 历史：2024/2023 每年两页 + 近30天1页
-python data_pipe.py --symbols 0700.HK 9988.HK --years 2024 2023 --archive_pages 2 --recent_pages 1
+python src/data_pipe.py --symbols 0700.HK 9988.HK --years 2024 2023 --archive_pages 2 --recent_pages 1
 
 # 股票池驱动
-python data_pipe.py --universe_file data/universe/hstech_current_constituents.csv --recent_pages 2
+python src/data_pipe.py --universe_file data/universe/hstech_current_constituents.csv --recent_pages 2
 ```
 
 ### 数据契约（Data Contract）

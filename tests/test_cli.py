@@ -2,7 +2,7 @@ import os, subprocess, sys
 
 def run(args, env=None):
     env = {**os.environ, **(env or {})}
-    p = subprocess.run([sys.executable, "data_pipe.py"] + args,
+    p = subprocess.run([sys.executable, "src/data_pipe.py"] + args,
                        env=env, capture_output=True, text=True)
     return p.returncode, p.stdout + p.stderr
 

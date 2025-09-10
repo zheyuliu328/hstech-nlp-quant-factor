@@ -39,20 +39,23 @@ MODEL_NAME = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
 
 def convert_sentiment_to_score(sentiment_label: str, confidence: float) -> float:
     """
-    将情感标签转换为数值分数
+    将情感标签转换为数值分数（优化版本）
     
     Args:
         sentiment_label: 情感标签 ('LABEL_0', 'LABEL_1', 'LABEL_2' 或 'NEGATIVE', 'NEUTRAL', 'POSITIVE')
         confidence: 置信度分数
         
     Returns:
-        情感分数 (-1.0 到 1.0，负数表示负面，正数表示正面，0表示中性)
+        情感分数 (-1.0 到 1.0，负数表示负面，正数表示正面)
     """
     # 处理不同的标签格式
     if sentiment_label in ['LABEL_0', 'NEGATIVE', 'negative']:
         return -confidence  # 负面情感，置信度越高分数越负
     elif sentiment_label in ['LABEL_1', 'NEUTRAL', 'neutral']:
-        return 0.0  # 中性情感，分数为0
+        # 优化：中性情感不再固定为0，而是基于置信度的微弱信号
+        # 如果模型对中性很确信，给予接近0的分数
+        # 如果模型不太确信，可能包含轻微的情感倾向
+        return (confidence - 0.5) * 0.2  # 范围: [-0.1, 0.1]
     elif sentiment_label in ['LABEL_2', 'POSITIVE', 'positive']:
         return confidence  # 正面情感，置信度越高分数越正
     else:
