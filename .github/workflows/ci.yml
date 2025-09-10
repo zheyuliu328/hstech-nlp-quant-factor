@@ -32,6 +32,6 @@ jobs:
       - name: Smoke run (no heavy I/O)
         run: |
           python -c "import sys; print('python ok', sys.version)"
-          test -f run.sh && bash -n run.sh || true
+          bash run.sh --dry-run || true
 
 
