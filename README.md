@@ -17,49 +17,49 @@
 
 </div>
 
-## 🚀 About This Project
+## 项目简介
 
-In the fast-paced Hong Kong equity market, can public news sentiment offer a predictive edge? This project builds a production-grade, end-to-end research pipeline to answer that question.
+本项目围绕一个直接问题展开：公开新闻的情绪在港股是否具有预测价值？为此，我们实现了一个可复现的端到端研究管线：
 
-- Automatically ingests multi-lingual news for ~500 HSCI stocks
-- Scores sentiment via a robust dual-engine (Transformer models + financial lexicons)
-- Constructs a unique sentiment factor and validates it through IC, quantile backtests, and style correlation
+- 覆盖 HSCI 全市场（约 500 只），多语言新闻采集与清洗
+- 双引擎情绪评估（Transformer 模型 + 金融词典）
+- 因子构建与验证（IC、分位回测、风格相关性）
 
-My analysis reveals a consistent mean-reverting (contrarian) signal, particularly pronounced among small-cap and tech stocks. The factor shows low correlation with traditional styles, indicating independent alpha potential. This repo contains the full, reproducible codebase.
+整体发现：情绪信号在港股呈现较稳定的“反向”特征，对小盘/科技股更敏感；与传统风格低相关，具有独立性。仓库内提供完整代码与脚本，支持一键复现。
 
-## ✨ Key Features
-- **End-to-End Automation**: Single `run.sh` handles data processing → factor → evaluation → figures
-- **Dual-Track Sentiment Engine**: Transformer (RoBERTa/FinBERT) + financial lexicon, multi-lingual (繁/简/英)
-- **Configuration-Driven**: Centralized control via `config/hk_market.yaml` for sources, weights, windows
-- **Optimized Data Pipeline**: Vectorized/parallel compute with DuckDB warehouse (bronze/silver/gold)
+## 关键特性
+- 一键化：`run.sh` 完成数据处理 → 因子生成 → 评估 → 图表
+- 双引擎情绪：Transformer（RoBERTa/FinBERT）+ 金融词典，多语言（繁/简/英）
+- 配置驱动：`config/hk_market.yaml` 管控数据源、权重与窗口
+- 数据与计算：DuckDB 分层仓库；向量化/并行与增量计算
 
-## 🏁 Quick Start
+## 快速开始
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 bash run.sh   # 一键生成三张核心图与评估产物
 ```
 
-## 🎬 现场演示（30秒）
+## 现场演示（30秒）
 - 执行：`bash run.sh`
 - 三图产物：`reports/figs/ic_timeseries.png`、`reports/figs/deciles.png`、`reports/figs/corr_heatmap.png`
-- 快速解读：情绪因子呈稳定“反向”特征，小盘/科技股更敏感；与传统风格低相关
+- 快速解读：情绪因子呈“反向”特征，小盘/科技股更敏感；与传统风格低相关
 
-## 📈 Research Findings & Roadmap
-- **Evaluation**
+## 研究结论与路线图
+- 评估
   - Rank IC（示例口径）：≈ -0.08（反向）；t ≈ -1.3；IR ≈ -0.39
-  - 低风格相关性，具独立Alpha潜力
-- **Limitations**
-  - 历史样本需扩至 ≥24月；回测暂未计交易成本/换手
-  - 行业/风格中性仍需体系化（Barra集成）
-- **Next (P0)**
-  - 扩历史与数据契约断言；行业/风格中性与Barra集成
+  - 与传统风格低相关，具备一定独立性
+- 限制
+  - 历史样本有待扩展（≥24 月）；回测暂未计交易成本/换手
+  - 行业/风格中性仍需体系化（Barra 集成）
+- 下一步（P0）
+  - 扩历史与数据契约断言；行业/风格中性与 Barra 集成
   - 回测加入费率/滑点/换手与容量约束
 
 ---
 
 <details>
-<summary>💻 点击展开：详细命令 & 技术规格（Commands & Specs）</summary>
+<summary>点击展开：详细命令与技术规格</summary>
 
 ### 技术架构（双轨情绪 + 配置驱动）
 ```mermaid
