@@ -1,6 +1,6 @@
 # 港股 NLP 情绪因子 - 统一版 README（HSTECH/HSCI）
 
-[![GitHub Repo](https://img.shields.io/badge/GitHub-hstech--nlp--quant--factor-181717?logo=github)](https://github.com/zheyuliu328/hstech-nlp-quant-factor) [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](requirements.txt)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-hstech--nlp--quant--factor-181717?logo=github)](https://github.com/zheyuliu328/hstech-nlp-quant-factor) [![CI](https://github.com/zheyuliu328/hstech-nlp-quant-factor/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/zheyuliu328/hstech-nlp-quant-factor/actions/workflows/ci.yml) [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](requirements.txt)
 
 > 端到端、可复现的港股新闻情绪因子研究系统：从数据→情感→因子→回测→图表，一键跑通。
 
