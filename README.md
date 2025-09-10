@@ -4,44 +4,44 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python: 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
-An end-to-end, reproducible research system for a news sentiment factor in the Hong Kong equity market. The pipeline automates the entire workflow from data ingestion to factor backtesting and reporting.
+This repository contains an end-to-end, reproducible research pipeline for a news sentiment factor in the Hong Kong equity market. The system automates the entire workflow from data ingestion to factor backtesting and reporting.
 
-![IC Timeseries](reports/figs/ic_timeseries.png)
-![Quantile Backtest](reports/figs/deciles.png)
-![Style Correlation](reports/figs/corr_heatmap.png)
+| IC Timeseries | Quantile Backtest | Style Correlation |
+| :---: | :---: | :---: |
+| <img src="reports/figs/ic_timeseries.png" width="250"/> | <img src="reports/figs/deciles.png" width="250"/> | <img src="reports/figs/corr_heatmap.png" width="250"/> |
 
 ---
 
-### 🚀 Project Overview
+## Project Overview
 
-This project investigates a core question: does public news sentiment hold predictive power in the Hong Kong stock market? To answer this, I've built a reproducible, end-to-end quantitative research pipeline that:
+This project develops and tests a quantitative hypothesis: does public news sentiment hold predictive power in the Hong Kong stock market? To answer this, I have built a reproducible, end-to-end research pipeline that:
 
-- Covers the entire Hang Seng Composite Index (~500 stocks), ingesting and cleaning multi-lingual news.
-- Employs a dual-engine sentiment scoring model (Transformer + Financial Lexicon).
-- Constructs and validates the sentiment factor using standard quantitative techniques (IC, Quantile Backtests, Style Analysis).
+- Covers the entire Hang Seng Composite Index (~500 stocks), ingesting and cleaning multi-lingual news data.
+- Employs a dual-engine sentiment scoring model, combining a Transformer-based model with a financial lexicon.
+- Constructs and validates the sentiment factor using standard quantitative techniques (Information Coefficient, Quantile Backtests, and Style Factor Analysis).
 
-The primary finding is a consistent **mean-reverting signal** (negative correlation with forward returns), which is more pronounced in small-cap and tech stocks. The factor also exhibits low correlation to traditional style factors, suggesting its potential as an independent alpha source.
+The primary finding is a consistent **mean-reverting signal** (a negative correlation with forward returns), which is more pronounced in small-cap and tech stocks. The factor also exhibits a low correlation to traditional style factors, suggesting its potential as a source of independent alpha.
 
-### ✨ Key Features
+## Key Features
 
-- **One-Click Execution**: `run.sh` handles the entire pipeline from data processing to generating final results.
+- **End-to-End Automation**: A single `run.sh` script handles the entire pipeline from data processing to generating final results and visualizations.
 - **Dual-Engine Sentiment Analysis**: Combines the deep semantic understanding of **Transformer models (RoBERTa/FinBERT)** with the stability of a **financial lexicon** for robust multi-lingual analysis.
-- **Configuration-Driven**: Easily manage data sources, model weights, and parameters via a central `config/hk_market.yaml`.
-- **Optimized Data & Compute**: Uses a layered **DuckDB** warehouse for data management and vectorized operations for high-performance computation.
+- **Configuration-Driven**: Key parameters such as data sources, model weights, and lookback windows are managed via a central `config/hk_market.yaml`.
+- **Optimized Data & Compute**: Utilizes a layered **DuckDB** data warehouse for efficient queries and vectorized **Pandas/NumPy** operations for high-performance computation.
 
-### 🏁 Quick Start
+## Quick Start
 
 ```bash
-# 1. Set up the environment
+# 1. Set up the virtual environment
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 # 2. Run the end-to-end pipeline
 bash run.sh
 ```
-The three core charts will be generated in the `reports/figs/` directory.
+The resulting charts and analysis files will be generated in the `reports/` directory.
 
-### 📈 Findings & Roadmap
+## Findings & Roadmap
 
 #### Key Metrics (Sampled)
 - **Rank IC**: Approx. **-0.08** (consistent negative signal)
@@ -50,18 +50,38 @@ The three core charts will be generated in the `reports/figs/` directory.
 - Low correlation with traditional style factors, confirming its potential as a diversifying alpha source.
 
 #### Current Limitations
-- Historical backtest period needs expansion (target: >24 months).
-- Backtest does not yet account for transaction costs, slippage, or turnover constraints.
-- Risk neutralization (industry, style factors) needs to be more systematic.
+- The historical backtest period requires expansion (target: >24 months) for robust validation across different market regimes.
+- The current backtest does not account for transaction costs, slippage, or portfolio turnover constraints.
+- Risk neutralization against industry and style factors needs to be implemented more systematically.
 
-#### Next Steps (P0)
-- Expand historical dataset and implement data contract assertions.
-- Integrate a **Barra-style risk model** for systematic factor neutralization.
-- Incorporate transaction costs and turnover constraints into the vectorized backtester.
+#### Next Steps
+- Expand the historical dataset and implement data contract assertions for quality control.
+- Integrate a **Barra-style risk model** for systematic factor neutralization to isolate pure alpha.
+- Incorporate realistic transaction cost models into the vectorized backtester to generate net performance metrics.
 
 <details>
-<summary>💻 Click to view Detailed Commands & Technical Specifications</summary>
+<summary><strong>Advanced Usage & Technical Details</strong></summary>
 
-(Place your detailed commands and specs here; previously folded content can be moved into this section.)
+While `bash run.sh` is the main entry point, the pipeline consists of modular scripts that can be executed independently for debugging or specific tasks.
+
+```bash
+# Universe management (HSCI example)
+python src/hk_universe_builder.py --output-dir data/universe/hk/
+
+# Price download for a given universe
+python src/download_hk_prices.py --universe-file data/universe/hk/hsci_constituents.csv
+
+# News ingestion (EventRegistry)
+python src/data_pipe.py --universe_file data/universe/hk/hsci_constituents.csv --recent_pages 2
+
+# Sentiment analysis (Transformer + lexicon pipeline)
+python src/sentiment_top.py --input-file news_out/hk/hk_news_latest.csv --output-file data/processed/hk/hk_sentiment_analysis.csv
+
+# Factor generation and standardization
+python src/hk_factor_generator.py --sentiment-file data/processed/hk/hk_sentiment_analysis.csv --price-file data/hk_prices.csv --standardize
+
+# Factor validation (IC, quantiles)
+python src/validate_factor.py
+```
 
 </details>
