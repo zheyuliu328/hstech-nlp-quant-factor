@@ -1,0 +1,9 @@
+{
+  "mode": "DEMO",
+  "articles_processed": 5,
+  "sentiment_distribution": {
+    "positive": 2,
+    "negative": 2,
+    "neutral": 1
+  }
+}

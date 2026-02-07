@@ -1,0 +1,32 @@
+[
+  {
+    "date": "2024-01-01",
+    "ticker": "00700.HK",
+    "sentiment": "positive",
+    "title": "\u817e\u8baf\u63a7\u80a1\u53d1\u5e03\u5e74\u5ea6\u4e1a\u7ee9\u62a5\u544a\uff0c\u8425\u6536\u589e\u957f\u8d85\u9884\u671f"
+  },
+  {
+    "date": "2024-01-01",
+    "ticker": "00700.HK",
+    "sentiment": "negative",
+    "title": "\u963f\u91cc\u5df4\u5df4\u906d\u9047\u53cd\u5784\u65ad\u8c03\u67e5\uff0c\u80a1\u4ef7\u5927\u5e45\u4e0b\u8dcc"
+  },
+  {
+    "date": "2024-01-01",
+    "ticker": "00700.HK",
+    "sentiment": "neutral",
+    "title": "\u7f8e\u56e2\u5916\u5356\u4e1a\u52a1\u4fdd\u6301\u7a33\u5b9a\u589e\u957f"
+  },
+  {
+    "date": "2024-01-02",
+    "ticker": "00700.HK",
+    "sentiment": "positive",
+    "title": "\u5c0f\u7c73\u96c6\u56e2\u53d1\u5e03\u65b0\u6b3e\u65d7\u8230\u624b\u673a\uff0c\u5e02\u573a\u53cd\u54cd\u70ed\u70c8"
+  },
+  {
+    "date": "2024-01-02",
+    "ticker": "00700.HK",
+    "sentiment": "negative",
+    "title": "\u4eac\u4e1c\u7269\u6d41\u5ba3\u5e03\u88c1\u5458\u8ba1\u5212\uff0c\u4f18\u5316\u6210\u672c\u7ed3\u6784"
+  }
+]

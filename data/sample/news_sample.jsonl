@@ -1,0 +1,5 @@
+{"uri": "sample://demo/2024-01-01/0001", "date": "2024-01-01", "time": "09:30:00", "title": "腾讯控股发布年度业绩报告，营收增长超预期", "body": "腾讯控股(00700.HK)今日发布2024年度业绩报告，全年营收同比增长15%，净利润增长20%。", "source": "Demo News", "sentiment_gt": "positive"}
+{"uri": "sample://demo/2024-01-01/0002", "date": "2024-01-01", "time": "10:15:00", "title": "阿里巴巴遭遇反垄断调查，股价大幅下跌", "body": "阿里巴巴集团(09988.HK)今日宣布收到监管部门反垄断调查通知。", "source": "Demo News", "sentiment_gt": "negative"}
+{"uri": "sample://demo/2024-01-01/0003", "date": "2024-01-01", "time": "11:00:00", "title": "美团外卖业务保持稳定增长", "body": "美团(03690.HK)公布最新运营数据，外卖业务订单量同比增长8%。", "source": "Demo News", "sentiment_gt": "neutral"}
+{"uri": "sample://demo/2024-01-02/0001", "date": "2024-01-02", "time": "09:00:00", "title": "小米集团发布新款旗舰手机，市场反响热烈", "body": "小米集团(01810.HK)正式发布年度旗舰手机，预售首小时销量突破10万台。", "source": "Demo News", "sentiment_gt": "positive"}
+{"uri": "sample://demo/2024-01-02/0002", "date": "2024-01-02", "time": "14:30:00", "title": "京东物流宣布裁员计划，优化成本结构", "body": "京东物流(02618.HK) announced a restructuring plan that includes workforce reduction.", "source": "Demo News", "sentiment_gt": "negative"}
