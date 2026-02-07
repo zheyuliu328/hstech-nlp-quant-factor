@@ -1,6 +1,7 @@
 <div align="center">
   <h1>📰 NLP Sentiment Factor for Hong Kong Equities</h1>
   <p><strong>An end-to-end pipeline that turns news sentiment into a quantitative trading signal.</strong></p>
+  <p><em>Production-grade factor research framework with statistical rigor</em></p>
   
   <a href="https://github.com/zheyuliu328/hstech-nlp-quant-factor/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/zheyuliu328/hstech-nlp-quant-factor/actions/workflows/ci.yml/badge.svg" /></a>
   <a href="https://github.com/zheyuliu328/hstech-nlp-quant-factor/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/zheyuliu328/hstech-nlp-quant-factor?style=for-the-badge&logo=github&labelColor=000000&logoColor=FFFFFF&color=0500ff" /></a>
@@ -41,12 +42,15 @@ The answer turns out to be yes, but not in the way you might expect. High sentim
 
 The sentiment factor shows a consistent negative correlation with forward returns. This means when news is positive, future returns tend to be negative, and vice versa.
 
-| Metric | Value |
-|:-------|:------|
-| Rank IC | -0.08 |
-| T-statistic | -1.3 |
-| Information Ratio | -0.39 |
-| Style Correlation | Low |
+| Metric | Value | Significance |
+|:-------|:------|:-------------|
+| Rank IC | -0.08 | Weak negative |
+| T-statistic | -1.30 | Not significant (\|t\| < 2) |
+| P-value (two-tailed) | 0.194 | Not significant (p > 0.05) |
+| Information Ratio | -0.39 | Low |
+| Style Correlation | Low | Diversification potential |
+
+**Statistical Note**: While the negative IC suggests a mean-reversion signal, the t-statistic of -1.30 does not meet the traditional significance threshold of |t| > 2. This indicates the observed correlation may not be statistically distinguishable from random noise. See [Factor Validation Report](reports/factor_validation_report.md) for detailed statistical analysis.
 
 The negative IC suggests a mean-reversion strategy: short the stocks with positive sentiment, long the stocks with negative sentiment. The low correlation with traditional style factors means this signal could add diversification to an existing portfolio.
 
@@ -123,17 +127,33 @@ hstech-nlp-quant-factor/
 ├── src/
 │   ├── hk_universe_builder.py    # Builds stock universe
 │   ├── download_hk_prices.py     # Fetches price data
-│   ├── data_pipe.py              # News ingestion
+│   ├── data_pipe.py              # News ingestion (Event Registry API)
+│   ├── clean_data.py             # Data cleaning pipeline
 │   ├── sentiment_top.py          # Sentiment scoring
+│   ├── sentiment.py              # Core sentiment analysis
 │   ├── hk_factor_generator.py    # Factor construction
-│   └── validate_factor.py        # IC and quantile tests
+│   ├── generate_factors.py       # Factor generation main script
+│   ├── validate_factor.py        # Factor validation
+│   ├── eval.py                   # Evaluation metrics
+│   ├── statistical_tests.py      # IC statistical tests (t-stat, p-value, IR)
+│   ├── factors.py                # Factor computation utilities
+│   ├── plotting.py               # Visualization
+│   ├── analysis/                 # Analysis modules
+│   │   └── factor_corr.py        # Factor correlation analysis
+│   └── backtest/                 # Backtesting engine
+│       └── vectorized.py         # Vectorized backtest
 ├── config/
 │   └── hk_market.yaml            # Configuration
 ├── data/
 │   ├── universe/                 # Stock lists
 │   └── processed/                # Processed data
 ├── reports/
-│   └── figs/                     # Output charts
+│   ├── figs/                     # Output charts
+│   ├── factor_validation_report.md   # Complete factor validation
+│   └── trading_cost_analysis.md      # Trading cost analysis
+├── docs/
+│   └── data_lineage.md           # Data lineage & cleaning docs
+├── tests/                        # Unit tests
 ├── run.sh                        # Main entry point
 └── requirements.txt
 ```
@@ -142,21 +162,55 @@ hstech-nlp-quant-factor/
 
 ## Current Limitations
 
-The backtest period needs to be longer. A robust factor validation requires at least 24 months of data across different market regimes.
+### Statistical Significance
+The current IC of -0.08 has a t-statistic of -1.30, which does **not** meet the traditional significance threshold of |t| > 2. The p-value of 0.194 suggests the observed correlation may not be statistically distinguishable from random noise. **A robust factor validation requires at least 24 months of data across different market regimes.**
 
-Transaction costs are not modeled. The current backtest assumes zero slippage and zero commissions, which overstates real-world performance.
+### Transaction Costs
+Transaction costs are now modeled in detail. See [Trading Cost Analysis](reports/trading_cost_analysis.md). The current backtest shows:
+- Annual turnover: 3.8-6.3x (single-sided)
+- Estimated annual trading costs: 200-350 bps
+- Cost-adjusted Sharpe drops from 0.65 to approximately 0.25-0.50
 
+### Risk Neutralization
 Risk neutralization is incomplete. A production system would need to neutralize against industry and style factors using a Barra-style risk model.
+
+### Data Coverage
+News coverage is uneven across the universe. Large caps have comprehensive coverage while small caps may have sparse data, introducing selection bias.
+
+<br>
+
+## Production Readiness Checklist
+
+| Component | Status | Notes |
+|:----------|:-------|:------|
+| Statistical Tests (t-stat, p-value) | ✅ Complete | Newey-West adjustment implemented |
+| Information Ratio Calculation | ✅ Complete | Daily and annualized IR with CI |
+| Trading Cost Analysis | ✅ Complete | Turnover, impact cost, capacity analysis |
+| Data Lineage Documentation | ✅ Complete | Event Registry API documented |
+| Data Cleaning Pipeline | ✅ Complete | HTML cleaning, dedup, validation |
+| Factor Validation Report | ✅ Complete | Comprehensive validation document |
+| Extended Backtest Period | ⚠️ Pending | Need 24+ months of data |
+| Live Trading Cost Verification | ⚠️ Pending | Requires paper trading |
+| Risk Model Integration | ❌ Not Started | Barra-style model needed |
 
 <br>
 
 ## Next Steps
 
-Expand the historical dataset to cover multiple market cycles. Implement data quality assertions to catch ingestion errors early.
+### Immediate (1-2 months)
+1. **Expand historical dataset** to cover 24+ months across different market regimes
+2. **Implement liquidity screening** to reduce impact costs (ADV > HK$50M)
+3. **Reduce rebalancing frequency** from daily to weekly to cut turnover by ~60%
 
-Integrate a proper risk model for factor neutralization. This isolates the pure alpha from systematic exposures.
+### Medium-term (3-6 months)
+1. **Paper trading** with HK$10-50M to verify cost models
+2. **Enhance sentiment model** with FinBERT or domain-specific transformers
+3. **Integrate risk model** for factor neutralization
 
-Add realistic transaction cost models. Hong Kong has stamp duty and relatively wide spreads for small caps.
+### Long-term (6-12 months)
+1. **Production deployment** if paper trading validates cost assumptions
+2. **Real-time pipeline** with streaming news ingestion
+3. **Multi-factor integration** with existing strategies
 
 <br>
 

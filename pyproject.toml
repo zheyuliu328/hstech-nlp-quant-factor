@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hstech-nlp-quant-factor"
+version = "2.0.0"
+description = "Hong Kong Stock NLP Sentiment Factor with statistical validation and backtesting"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Zheyu Liu", email = "zheyuliu328@gmail.com"}
+]
+keywords = ["nlp", "sentiment", "quant", "factor", "hong-kong-stock", "backtesting"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Office/Business :: Financial",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "pandas>=1.5.0",
+    "numpy>=1.21.0",
+    "transformers>=4.20.0",
+    "torch>=1.12.0",
+    "yfinance>=0.1.87",
+    "requests>=2.28.0",
+    "python-dotenv>=0.19.0",
+    "tqdm>=4.64.0",
+    "plotly>=5.0.0",
+    "matplotlib>=3.5.0",
+    "scipy>=1.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "ruff>=0.0.200",
+]
+
+[project.scripts]
+nlp-factor = "hstech_nlp_quant_factor.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/zheyuliu328/hstech-nlp-quant-factor"
+Documentation = "https://github.com/zheyuliu328/hstech-nlp-quant-factor#readme"
+Repository = "https://github.com/zheyuliu328/hstech-nlp-quant-factor"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hstech_nlp_quant_factor"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39']
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "--cov=hstech_nlp_quant_factor --cov-report=term-missing"
