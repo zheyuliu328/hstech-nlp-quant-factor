@@ -1,7 +1,6 @@
 <div align="center">
   <h1>📰 NLP Sentiment Factor for Hong Kong Equities</h1>
-  <p><strong>An end-to-end pipeline that turns news sentiment into a quantitative trading signal.</strong></p>
-  <p><em>Production-grade factor research framework with statistical rigor</em></p>
+  <p><strong>面向量化研究的港股情绪因子分析工具</strong></p>
   
   <a href="https://github.com/zheyuliu328/hstech-nlp-quant-factor/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/zheyuliu328/hstech-nlp-quant-factor/actions/workflows/ci.yml/badge.svg" /></a>
   <a href="https://github.com/zheyuliu328/hstech-nlp-quant-factor/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/zheyuliu328/hstech-nlp-quant-factor?style=for-the-badge&logo=github&labelColor=000000&logoColor=FFFFFF&color=0500ff" /></a>
@@ -11,234 +10,164 @@
 
 <br>
 
-<div align="center">
-  <table>
-    <tr>
-      <td align="center"><strong>IC Timeseries</strong></td>
-      <td align="center"><strong>Quantile Backtest</strong></td>
-      <td align="center"><strong>Style Correlation</strong></td>
-    </tr>
-    <tr>
-      <td><img src="reports/figs/ic_timeseries.png" width="250"/></td>
-      <td><img src="reports/figs/deciles.png" width="250"/></td>
-      <td><img src="reports/figs/corr_heatmap.png" width="250"/></td>
-    </tr>
-  </table>
-</div>
+## 一句话定位
 
-<br>
+面向量化研究的港股情绪因子分析工具，演示 NLP 情感评分与因子验证的完整研究流程。
 
-## What is this?
+---
 
-This project answers a simple question: does news sentiment predict stock returns in Hong Kong?
+## 核心能力
 
-The pipeline scrapes financial news, scores sentiment using both a Transformer model and a financial lexicon, then tests whether that sentiment score has any predictive power. It covers the entire Hang Seng Composite Index, about 500 stocks.
+1. **双引擎情感分析**: 融合 RoBERTa Transformer 与金融词典，对新闻文本进行情感评分
+2. **因子验证框架**: 计算 IC、Rank-IC、t 统计量，评估因子预测能力与统计显著性
+3. **成本敏感性分析**: 建模交易成本与换手率，评估策略实盘可行性
 
-The answer turns out to be yes, but not in the way you might expect. High sentiment predicts lower returns, not higher. This is a classic mean-reversion signal. Stocks that get hyped in the news tend to underperform in the following days.
+---
 
-<br>
-
-## The Key Finding
-
-The sentiment factor shows a consistent negative correlation with forward returns. This means when news is positive, future returns tend to be negative, and vice versa.
-
-| Metric | Value | Significance |
-|:-------|:------|:-------------|
-| Rank IC | -0.08 | Weak negative |
-| T-statistic | -1.30 | Not significant (\|t\| < 2) |
-| P-value (two-tailed) | 0.194 | Not significant (p > 0.05) |
-| Information Ratio | -0.39 | Low |
-| Style Correlation | Low | Diversification potential |
-
-**Statistical Note**: While the negative IC suggests a mean-reversion signal, the t-statistic of -1.30 does not meet the traditional significance threshold of |t| > 2. This indicates the observed correlation may not be statistically distinguishable from random noise. See [Factor Validation Report](reports/factor_validation_report.md) for detailed statistical analysis.
-
-The negative IC suggests a mean-reversion strategy: short the stocks with positive sentiment, long the stocks with negative sentiment. The low correlation with traditional style factors means this signal could add diversification to an existing portfolio.
-
-<br>
-
-## Quick Start
-
-Two commands and the entire pipeline runs.
+## 快速开始
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-```
+# 1. 安装依赖
+python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 
-```bash
+# 2. 运行完整流程
 bash run.sh
+
+# 3. 查看验证报告
+cat reports/factor_validation_report.md
 ```
 
-This executes the full pipeline: data ingestion, sentiment scoring, factor construction, and validation. Results appear in the `reports/` directory.
+### 输出工件
 
-<br>
+运行后生成：
+- `reports/factor_validation_report.md` - 因子验证完整报告（IC、统计检验、回测）
+- `reports/trading_cost_analysis.md` - 交易成本与容量分析
+- `reports/figs/*.png` - IC 时序图、分位数收益图、相关性热力图
+- `data/processed/daily_sentiment_factors.csv` - 日度情绪因子值
 
-## How It Works
+---
 
-The pipeline has four stages.
+## 关键发现
 
-**Data Ingestion** pulls news articles from EventRegistry API and price data from Yahoo Finance. It covers all constituents of the Hang Seng Composite Index.
+情绪因子与下期收益呈负相关（均值回归效应），但**统计显著性不足**：
 
-**Sentiment Scoring** uses a dual-engine approach. A RoBERTa-based Transformer model captures deep semantic meaning, while a financial lexicon provides stability for domain-specific terms. The final score is a weighted combination.
+| 指标 | 数值 | 评估 |
+|:-----|:-----|:-----|
+| Rank-IC | -0.08 | 弱负相关 |
+| t-statistic | -1.30 | 不显著 (\|t\|<2) |
+| p-value | 0.194 | 不显著 (p>0.05) |
+| 年化换手率 | 3.8-6.3x | 中等 |
+| 估计年化成本 | 200-350 bps | 显著侵蚀收益 |
 
-**Factor Construction** aggregates daily sentiment scores by stock and standardizes them cross-sectionally. This produces a factor that can be compared across the universe.
+**结论**: 当前结果不满足传统因子标准，需进一步优化验证。
 
-**Validation** calculates Information Coefficient (correlation between factor and forward returns), runs quantile backtests (do high-sentiment stocks outperform?), and checks correlation with traditional style factors (size, value, momentum).
+---
 
-<br>
-
-## The Architecture
-
-```mermaid
-graph LR
-    subgraph "Data Layer"
-        NEWS[("📰 News API")]
-        PRICE[("📈 Price Data")]
-    end
-
-    subgraph "Processing Layer"
-        NLP[("🤖 Transformer Model")]
-        LEX[("📖 Financial Lexicon")]
-        MERGE[("⚖️ Score Merger")]
-    end
-
-    subgraph "Analysis Layer"
-        FACTOR[("📊 Factor Builder")]
-        IC[("📉 IC Analysis")]
-        QUANT[("📈 Quantile Test")]
-    end
-
-    NEWS --> NLP
-    NEWS --> LEX
-    NLP --> MERGE
-    LEX --> MERGE
-    MERGE --> FACTOR
-    PRICE --> FACTOR
-    FACTOR --> IC
-    FACTOR --> QUANT
-```
-
-<br>
-
-## Project Structure
+## 项目结构
 
 ```
 hstech-nlp-quant-factor/
 ├── src/
-│   ├── hk_universe_builder.py    # Builds stock universe
-│   ├── download_hk_prices.py     # Fetches price data
-│   ├── data_pipe.py              # News ingestion (Event Registry API)
-│   ├── clean_data.py             # Data cleaning pipeline
-│   ├── sentiment_top.py          # Sentiment scoring
-│   ├── sentiment.py              # Core sentiment analysis
-│   ├── hk_factor_generator.py    # Factor construction
-│   ├── generate_factors.py       # Factor generation main script
-│   ├── validate_factor.py        # Factor validation
-│   ├── eval.py                   # Evaluation metrics
-│   ├── statistical_tests.py      # IC statistical tests (t-stat, p-value, IR)
-│   ├── factors.py                # Factor computation utilities
-│   ├── plotting.py               # Visualization
-│   ├── analysis/                 # Analysis modules
-│   │   └── factor_corr.py        # Factor correlation analysis
-│   └── backtest/                 # Backtesting engine
-│       └── vectorized.py         # Vectorized backtest
+│   ├── hk_universe_builder.py    # 股票池构建
+│   ├── download_hk_prices.py     # 股价数据获取
+│   ├── data_pipe.py              # 新闻数据获取
+│   ├── clean_data.py             # 数据清洗
+│   ├── sentiment_top.py          # 情感评分
+│   ├── hk_factor_generator.py    # 因子构建
+│   ├── validate_factor.py        # 因子验证
+│   ├── statistical_tests.py      # 统计检验
+│   └── backtest/                 # 回测引擎
+│       └── vectorized.py
 ├── config/
-│   └── hk_market.yaml            # Configuration
+│   └── hk_market.yaml            # 配置文件
 ├── data/
-│   ├── universe/                 # Stock lists
-│   └── processed/                # Processed data
+│   ├── universe/                 # 股票列表
+│   └── processed/                # 处理后数据
 ├── reports/
-│   ├── figs/                     # Output charts
-│   ├── factor_validation_report.md   # Complete factor validation
-│   └── trading_cost_analysis.md      # Trading cost analysis
+│   ├── figs/                     # 图表输出
+│   ├── factor_validation_report.md   # 验证报告
+│   └── trading_cost_analysis.md      # 成本分析
 ├── docs/
-│   └── data_lineage.md           # Data lineage & cleaning docs
-├── tests/                        # Unit tests
-├── run.sh                        # Main entry point
+│   ├── glossary.md               # 术语表
+│   ├── limitations.md            # 限制说明
+│   └── data_lineage.md           # 数据血缘
+├── tests/                        # 单元测试
+├── run.sh                        # 主入口
 └── requirements.txt
 ```
 
-<br>
+---
 
-## Current Limitations
+## 文档索引
 
-### Statistical Significance
-The current IC of -0.08 has a t-statistic of -1.30, which does **not** meet the traditional significance threshold of |t| > 2. The p-value of 0.194 suggests the observed correlation may not be statistically distinguishable from random noise. **A robust factor validation requires at least 24 months of data across different market regimes.**
+| 文档 | 说明 |
+|:-----|:-----|
+| [docs/glossary.md](docs/glossary.md) | 术语表（IC、Rank-IC、IR、bps 等） |
+| [docs/limitations.md](docs/limitations.md) | 项目限制与统计结论 |
+| [docs/data_lineage.md](docs/data_lineage.md) | 数据来源与清洗流程 |
+| [reports/factor_validation_report.md](reports/factor_validation_report.md) | 完整因子验证报告 |
+| [reports/trading_cost_analysis.md](reports/trading_cost_analysis.md) | 交易成本分析 |
 
-### Transaction Costs
-Transaction costs are now modeled in detail. See [Trading Cost Analysis](reports/trading_cost_analysis.md). The current backtest shows:
-- Annual turnover: 3.8-6.3x (single-sided)
-- Estimated annual trading costs: 200-350 bps
-- Cost-adjusted Sharpe drops from 0.65 to approximately 0.25-0.50
+---
 
-### Risk Neutralization
-Risk neutralization is incomplete. A production system would need to neutralize against industry and style factors using a Barra-style risk model.
+## 项目定位与限制
 
-### Data Coverage
-News coverage is uneven across the universe. Large caps have comprehensive coverage while small caps may have sparse data, introducing selection bias.
+### 项目性质
 
-<br>
+**本项目是面向量化研究的因子分析演示工具，非实盘交易系统**。
 
-## Production Readiness Checklist
+### 明确限制
 
-| Component | Status | Notes |
-|:----------|:-------|:------|
-| Statistical Tests (t-stat, p-value) | ✅ Complete | Newey-West adjustment implemented |
-| Information Ratio Calculation | ✅ Complete | Daily and annualized IR with CI |
-| Trading Cost Analysis | ✅ Complete | Turnover, impact cost, capacity analysis |
-| Data Lineage Documentation | ✅ Complete | Event Registry API documented |
-| Data Cleaning Pipeline | ✅ Complete | HTML cleaning, dedup, validation |
-| Factor Validation Report | ✅ Complete | Comprehensive validation document |
-| Extended Backtest Period | ⚠️ Pending | Need 24+ months of data |
-| Live Trading Cost Verification | ⚠️ Pending | Requires paper trading |
-| Risk Model Integration | ❌ Not Started | Barra-style model needed |
+| 限制项 | 说明 |
+|:-------|:-----|
+| ❌ 统计不显著 | 当前 IC 统计不显著（t=-1.30，\|t\|<2），不满足传统因子标准 |
+| ❌ 样本期短 | 回测期约 6 个月，未覆盖完整市场周期（建议 24 个月+） |
+| ❌ 覆盖不均 | 新闻数据源覆盖度不均，小盘股数据稀疏 |
+| ❌ 无风险模型 | 未实现风险中性化（无 Barra 风格模型） |
 
-<br>
+### 统计结论
 
-## Next Steps
+- **Rank-IC**: -0.08（弱负相关，均值回归信号）
+- **t-statistic**: -1.30（不显著，p=0.194）
+- **年化换手率**: 3.8-6.3x（中等，成本侵蚀显著）
 
-### Immediate (1-2 months)
-1. **Expand historical dataset** to cover 24+ months across different market regimes
-2. **Implement liquidity screening** to reduce impact costs (ADV > HK$50M)
-3. **Reduce rebalancing frequency** from daily to weekly to cut turnover by ~60%
+### 适用场景
 
-### Medium-term (3-6 months)
-1. **Paper trading** with HK$10-50M to verify cost models
-2. **Enhance sentiment model** with FinBERT or domain-specific transformers
-3. **Integrate risk model** for factor neutralization
+- ✅ 量化研究岗位面试项目演示
+- ✅ NLP 因子构建方法论学习
+- ✅ 因子验证流程参考
 
-### Long-term (6-12 months)
-1. **Production deployment** if paper trading validates cost assumptions
-2. **Real-time pipeline** with streaming news ingestion
-3. **Multi-factor integration** with existing strategies
+### 实盘前需完成
 
-<br>
+1. 扩展数据至 24 个月以上
+2. 实施流动性筛选（ADV > 5000 万港币）
+3. 降低调仓频率至周度
+4. 小规模纸面交易验证成本模型
 
-## Tech Stack
+---
 
-| Tool | Purpose |
-|:-----|:--------|
-| Python 3.8+ | Main language |
-| Transformers (HuggingFace) | Sentiment model |
-| DuckDB | Data warehouse |
-| Pandas / NumPy | Data processing |
-| Matplotlib | Visualization |
-| EventRegistry | News API |
-| yfinance | Price data |
+## 技术栈
 
-<br>
+| 工具 | 用途 |
+|:-----|:-----|
+| Python 3.8+ | 主语言 |
+| Transformers (HuggingFace) | 情感模型 |
+| DuckDB | 数据仓库 |
+| Pandas / NumPy | 数据处理 |
+| Matplotlib | 可视化 |
+| EventRegistry | 新闻 API |
+| yfinance | 股价数据 |
 
-## Author
+---
+
+## 作者
 
 **Zheyu Liu**
 
-This is a portfolio project demonstrating quantitative research methodology. The pipeline follows standard practices used by systematic hedge funds and asset managers.
-
-<br>
+面向量化研究的教育项目，演示系统性因子研究方法论。
 
 ---
 
 <div align="center">
-  <sub>Built for learning. Inspired by production quant research pipelines.</sub>
+  <sub>面向量化研究 • 演示级实现 • 非实盘系统</sub>
 </div>
-
