@@ -1,0 +1,12 @@
+{
+  "run_id": "20260208_013325",
+  "version": "2.0.0",
+  "timestamp": "2026-02-08T01:33:25.713096",
+  "input_file": "data/sample_news.csv",
+  "news_items_processed": 3,
+  "unique_stocks": 2,
+  "date_range": [
+    "2024-01-15",
+    "2024-01-17"
+  ]
+}
