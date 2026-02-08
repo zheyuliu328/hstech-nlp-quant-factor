@@ -45,7 +45,7 @@ scipy==1.13.1
 six @ file:///AppleInternal/Library/BuildRoots/4~B7e5ugCABw73MAeFSK0ogoFHGg4yzTtKi73iQ2w/Library/Caches/com.apple.xbs/Sources/python3/six-1.15.0-py2.py3-none-any.whl
 soupsieve==2.7
 sympy==1.14.0
-tokenizers==0.21.4
+tokenizers==0.22.2
 torch==2.8.0
 tqdm==4.67.1
 transformers==4.55.4
