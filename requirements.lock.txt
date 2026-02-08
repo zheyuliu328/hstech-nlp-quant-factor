@@ -8,7 +8,7 @@ curl_cffi==0.13.0
 cycler==0.12.1
 eventregistry==9.1
 filelock==3.19.1
-fonttools==4.59.1
+fonttools==4.60.2
 frozendict==2.4.6
 fsspec==2025.7.0
 future @ file:///AppleInternal/Library/BuildRoots/4~B7e5ugCABw73MAeFSK0ogoFHGg4yzTtKi73iQ2w/Library/Caches/com.apple.xbs/Sources/python3/future-0.18.2-py3-none-any.whl
