@@ -39,7 +39,7 @@ python-dotenv==1.1.1
 pytz==2025.2
 PyYAML==6.0.2
 regex==2025.7.34
-requests==2.32.4
+requests==2.32.5
 safetensors==0.6.2
 scipy==1.13.1
 six @ file:///AppleInternal/Library/BuildRoots/4~B7e5ugCABw73MAeFSK0ogoFHGg4yzTtKi73iQ2w/Library/Caches/com.apple.xbs/Sources/python3/six-1.15.0-py2.py3-none-any.whl
