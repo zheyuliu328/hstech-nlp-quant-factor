@@ -54,7 +54,7 @@ jobs:
         pip install pytest
         pip install -r requirements.txt
     - name: Run e2e tests
-      run: python -m pytest tests/test_e2e.py::test_nlp_run_real -v
+      run: python -m pytest tests/test_e2e.py -v
 
   verify:
     runs-on: ubuntu-latest
